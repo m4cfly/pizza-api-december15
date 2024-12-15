@@ -66,6 +66,13 @@ public class Order {
         }
     }
 
+    // New constructor
+    public Order(String orderDate, double orderPrice, User user) {
+        this.orderDate = orderDate;
+        this.orderPrice = orderPrice;
+        this.user = user;
+    }
+
     private UserDTO convertToUserDTO(PizzaUserDTO pizzaUserDTO) {
         // Conversion logic here
         return new UserDTO(pizzaUserDTO.getUsername(), pizzaUserDTO.getRoles());

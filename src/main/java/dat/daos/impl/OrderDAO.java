@@ -1,3 +1,4 @@
+
 package dat.daos.impl;
 
 import dat.dtos.OrderDTO;
@@ -9,6 +10,8 @@ import dk.bugelhartmann.UserDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAO {
@@ -28,7 +31,7 @@ public class OrderDAO {
         try (EntityManager em = emf.createEntityManager()) {
             Order order = em.find(Order.class, orderId);
             if (order == null) {
-                throw new ApiException(404, "order.http not found");
+                throw new ApiException(404, "Order not found");
             }
             return new OrderDTO(order);
         } catch (Exception e) {
@@ -49,10 +52,10 @@ public class OrderDAO {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
-            // Create a new order.http entity from the OrderDTO
+            // Create a new order entity from the OrderDTO
             Order order = new Order(orderDTO);
 
-            // Persist the order.http entity
+            // Persist the order entity
             em.persist(order);
             em.getTransaction().commit();
 
@@ -67,13 +70,13 @@ public class OrderDAO {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
-            // Find the existing order.http entity by its ID
+            // Find the existing order entity by its ID
             Order order = em.find(Order.class, orderId);
             if (order == null) {
-                throw new ApiException(404, "order.http not found");
+                throw new ApiException(404, "Order not found");
             }
 
-            // Update the existing order.http entity with the new data from the OrderDTO
+            // Update the existing order entity with the new data from the OrderDTO
             order.setOrderPrice(orderDTO.getOrderPrice());
             order.setOrderDate(orderDTO.getOrderDate());
             if (orderDTO.getUser() != null) {
@@ -94,13 +97,13 @@ public class OrderDAO {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
 
-            // Find the order.http entity by its ID
+            // Find the order entity by its ID
             Order order = em.find(Order.class, orderId);
             if (order == null) {
-                throw new ApiException(404, "order.http not found");
+                throw new ApiException(404, "Order not found");
             }
 
-            // Remove the order.http entity from the database
+            // Remove the order entity from the database
             em.remove(order);
 
             // Commit the transaction
@@ -110,9 +113,41 @@ public class OrderDAO {
         }
     }
 
-    // Assuming a method to convert PizzaUserDTO to User
+    public void populate() throws ApiException {
+        try (EntityManager em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+
+            // Create sample data
+            List<Order> sampleOrders = new ArrayList<>();
+            sampleOrders.add(new Order("2021-01-01", 100.0, null));
+            sampleOrders.add(new Order("2021-01-02", 200.0, null));
+            sampleOrders.add(new Order("2021-01-03", 300.0, null));
+            // Add sample orders to the list
+
+            // Persist sample data
+            for (Order order : sampleOrders) {
+                em.persist(order);
+            }
+
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            throw new ApiException(400, "Something went wrong during populate");
+        }
+    }
+
+    public List<OrderDTO> readAllFromUser(String username) throws ApiException {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<OrderDTO> query = em.createQuery(
+                    "SELECT new dat.dtos.OrderDTO(o) FROM Order o WHERE o.user.username = :username", OrderDTO.class);
+            query.setParameter("username", username);
+            return query.getResultList();
+        } catch (Exception e) {
+            throw new ApiException(400, "Something went wrong during readAllFromUser");
+        }
+    }
+
+    // Method to convert PizzaUserDTO to User
     private User convertToUser(PizzaUserDTO pizzaUserDTO) {
-        // Conversion logic here
         return new User(new UserDTO(pizzaUserDTO.getUsername(), pizzaUserDTO.getRoles()));
     }
 }

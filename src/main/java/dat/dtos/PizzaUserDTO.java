@@ -36,4 +36,8 @@ public class PizzaUserDTO implements Serializable {
                 this.username = user.getUsername();
                 this.roles = user.getRolesAsStrings();
         }
+        public PizzaUserDTO(String username, Set<String> roles) {
+                this.username = username;
+                this.roles = roles;
+        }
 }
