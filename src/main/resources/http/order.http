@@ -1,0 +1,64 @@
+### Populate the database with orders
+POST {{url}}/orders/populate
+Content-Type: application/json
+
+### Create a new order
+POST http://localhost:7000/api/orders
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "orderPrice": 25.99,
+  "orderDate": "2023-10-01",
+  "user": {
+    "username": "user"
+  },
+  "orderLines": [
+    {
+      "pizza": {
+        "id": 1
+      },
+      "quantity": 2
+    }
+  ]
+}
+
+### Get all orders
+GET http://localhost:7000/api/orders
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Get a specific order by ID
+GET http://localhost:7000/api/orders/1
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Get all orders for the current user
+GET http://localhost:7000/api/orders/user
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+### Update an order by ID
+PUT http://localhost:7000/api/orders/1
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+{
+  "orderPrice": 30.99,
+  "orderDate": "2023-10-02",
+  "user": {
+    "username": "user"
+  },
+  "orderLines": [
+    {
+      "pizza": {
+        "id": 1
+      },
+      "quantity": 3
+    }
+  ]
+}
+
+### Delete an order by ID
+DELETE http://localhost:7000/api/orders/1
+Authorization: Bearer {{jwt_token}}
