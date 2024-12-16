@@ -14,7 +14,7 @@ public class PizzaOrderRoute {
     public EndpointGroup getRoutes() {
         return () -> {
             post("/populate", pizzaOrderController::populate, Role.ANYONE);
-            post("/", pizzaOrderController::create, Role.ANYONE);
+            post("/", pizzaOrderController::create, Role.USER);
             get("/", pizzaOrderController::readAll, Role.ANYONE);
             get("/mine", pizzaOrderController::readAllFromUser,Role.ANYONE);
             get("/{id}", pizzaOrderController::read, Role.ANYONE);

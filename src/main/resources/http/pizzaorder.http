@@ -66,19 +66,16 @@ POST {{url}}/pizza-orders
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
-
-  {
-    "id": 40,
-    "pizzaName": "Margherita",
-    "quantity": 2,
-    "price": 15.99,
-    "user": {
-      "username": "usertest",
-      "password": null,
-      "roles": ["USER"]
-    }
+{
+  "pizzaName": "Margherita",
+  "quantity": 2,
+  "price": 15.99,
+  "user": {
+    "username": "usertest",
+    "password": null,
+    "roles": ["USER"]
   }
-
+}
 
 ###
 PUT {{url}}/pizza-orders/1

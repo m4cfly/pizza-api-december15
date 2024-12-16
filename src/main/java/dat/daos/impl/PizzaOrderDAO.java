@@ -28,9 +28,9 @@ public class PizzaOrderDAO implements IDAO<PizzaOrderDTO, Integer> {
     }
 
     @Override
-    public PizzaOrderDTO read(Integer id) throws ApiException {
+    public PizzaOrderDTO read(Integer integer) throws ApiException {
         try (EntityManager em = emf.createEntityManager()) {
-            PizzaOrder pizzaOrder = em.find(PizzaOrder.class, id);
+            PizzaOrder pizzaOrder = em.find(PizzaOrder.class, integer);
             if (pizzaOrder == null) {
                 throw new ApiException(404, "PizzaOrder not found");
             }
@@ -74,10 +74,10 @@ public class PizzaOrderDAO implements IDAO<PizzaOrderDTO, Integer> {
     }
 
     @Override
-    public PizzaOrderDTO update(Integer id, PizzaOrderDTO pizzaOrderDTO) throws ApiException {
+    public PizzaOrderDTO update(Integer integer, PizzaOrderDTO pizzaOrderDTO) throws ApiException {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            PizzaOrder pizzaOrder = em.find(PizzaOrder.class, id);
+            PizzaOrder pizzaOrder = em.find(PizzaOrder.class, integer);
             if (pizzaOrder == null) {
                 throw new ApiException(404, "PizzaOrder not found");
             }
@@ -92,10 +92,10 @@ public class PizzaOrderDAO implements IDAO<PizzaOrderDTO, Integer> {
     }
 
     @Override
-    public void delete(Integer id, UserDTO userDTO) throws ApiException {
+    public void delete(Integer integer, UserDTO userDTO) throws ApiException {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            PizzaOrder pizzaOrder = em.find(PizzaOrder.class, id);
+            PizzaOrder pizzaOrder = em.find(PizzaOrder.class, integer);
             if (pizzaOrder == null) {
                 throw new ApiException(404, "PizzaOrder not found");
             }
