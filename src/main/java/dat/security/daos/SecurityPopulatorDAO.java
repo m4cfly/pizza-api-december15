@@ -1,7 +1,6 @@
 package dat.security.daos;
 
 import dat.config.HibernateConfig;
-import dat.daos.impl.PizzaDAO;
 import dat.security.entities.Role;
 import dat.security.entities.User;
 import dk.bugelhartmann.UserDTO;

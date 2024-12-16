@@ -1,9 +1,6 @@
 package dat.config;
 
-import dat.entities.OrderLine;
-import dat.entities.Pizza;
-import dat.entities.Todo;
-import dat.entities.Order;
+import dat.entities.*;
 import dat.security.entities.Role;
 import dat.security.entities.User;
 import dat.utils.Utils;
@@ -51,6 +48,7 @@ public class HibernateConfig {
         configuration.addAnnotatedClass(Pizza.class);
         configuration.addAnnotatedClass(Order.class);
         configuration.addAnnotatedClass(OrderLine.class);
+        configuration.addAnnotatedClass(OrderUser.class);
     }
 
     private static EntityManagerFactory createEMF(boolean forTest) {

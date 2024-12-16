@@ -3,6 +3,7 @@ GET {{url}}/auth/test/
 
 ### Populate the database with some data
 POST {{url}}/orderlines/populate/
+Content-Type: application/json
 
 ### Create a new user - this one will only get a USER role by default
 POST {{url}}/auth/register/
@@ -13,7 +14,7 @@ Content-Type: application/json
   "password": "test123"
 }
 
-###
+### Login to get a JWT token
 POST {{url}}/auth/login/
 Content-Type: application/json
 
@@ -27,62 +28,88 @@ Content-Type: application/json
     console.log("JWT Token:", client.global.get("jwt_token"));
 %}
 
-###
+### Get user demo data
 GET {{url}}/protected/user_demo/
 Accept: application/json
 Authorization: Bearer {{jwt_token}}
 
-###
+### Get admin demo data
 GET {{url}}/protected/admin_demo/
 Accept: application/json
 Authorization: Bearer {{jwt_token}}
 
 ### Add admin role to user
 POST {{url}}/auth/user/addrole/
-Accept: application/json
+Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
 {
-    "role": "admin"
+  "role": "admin"
 }
 
 ### Populate the database with order lines
-POST {{url}}/orderlines/populate
+POST {{url}}/orderlines/populate/
 Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
 
 ### Create a new order line
-POST {{url}}/orderlines
+POST {{url}}/orderlines/
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
 {
+  "id": 1,
   "quantity": 2,
-  "price": 15.99,
+  "price": 19.99,
   "pizza": {
-    "id": 1
+    "id": 1,
+    "name": "Margherita",
+    "ingredients": ["Tomato", "Mozzarella", "Basil"]
   },
   "order": {
-    "id": 1
+    "id": 1,
+    "orderPrice": 39.98,
+    "orderDate": "2023-10-01",
+    "user": {
+      "username": "john_doe",
+      "roles": ["USER", "ADMIN"]
+    },
+    "orderLines": [
+      {
+        "id": 1,
+        "quantity": 2,
+        "price": 19.99,
+        "pizza": {
+          "id": 1,
+          "name": "Margherita",
+          "ingredients": ["Tomato", "Mozzarella", "Basil"]
+        }
+      }
+    ]
+  },
+  "user": {
+    "username": "john_doe",
+    "roles": ["USER", "ADMIN"]
   }
 }
 
 ### Get all order lines
-GET {{url}}/orderline
+GET {{url}}/orderlines/
 Accept: application/json
 Authorization: Bearer {{jwt_token}}
 
 ### Get a specific order line by ID
-GET {{url}}/orderline/1
+GET {{url}}/orderlines/1
 Accept: application/json
 Authorization: Bearer {{jwt_token}}
 
 ### Get all order lines for the current user
-GET {{url}}/orderline/user
+GET {{url}}/orderlines/user
 Accept: application/json
 Authorization: Bearer {{jwt_token}}
 
 ### Update an order line by ID
-PUT {{url}}/orderline/{id}
+PUT {{url}}/orderlines/{id}
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -98,6 +125,5 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ### Delete an order line by ID
-DELETE {{url}}/orderline/{id}
+DELETE {{url}}/orderlines/{id}
 Authorization: Bearer {{jwt_token}}
-```
