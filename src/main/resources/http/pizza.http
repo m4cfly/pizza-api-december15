@@ -3,9 +3,8 @@ POST {{url}}/pizzas/populate
 Content-Type: application/json
 
 
-
 ### Create a new pizza
-POST http://localhost:7000/api/pizzas
+POST {{url}}/pizzas
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
@@ -18,16 +17,16 @@ Authorization: Bearer {{jwt_token}}
 }
 
 ### Get all pizzas
-GET http://localhost:7000/api/pizzas
+GET {{url}}/pizzas
 
 ### Get a specific pizza by ID
-GET http://localhost:7000/api/pizzas/1
+GET {{url}}/pizzas/1
 
 ### Get all pizzas for the current user
-GET http://localhost:7000/api/pizzas/user
+GET {{url}}/pizzas/user
 
 ### Update a pizza by ID
-PUT http://localhost:7000/api/pizzas/1
+PUT {{url}}/pizzas/1
 Content-Type: application/json
 
 {
@@ -39,7 +38,7 @@ Content-Type: application/json
 }
 
 ### Delete a pizza by ID
-DELETE http://localhost:7000/api/pizzas/1
+DELETE {{url}}/pizzas/1
 
 
 ### A simple get request to the test endpoint. No need for login
