@@ -4,6 +4,7 @@ import dat.daos.IDAO;
 import dat.dtos.OrderLineDTO;
 import dat.dtos.PizzaDTO;
 import dat.dtos.OrderDTO;
+import dat.dtos.PizzaUserDTO;
 import dat.entities.OrderLine;
 import dat.entities.Pizza;
 import dat.entities.Order;
@@ -14,6 +15,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
+import java.util.Set;
 
 public class OrderLineDAO implements IDAO<OrderLineDTO, Integer> {
 
@@ -117,8 +119,26 @@ public class OrderLineDAO implements IDAO<OrderLineDTO, Integer> {
     }
 
     public OrderLineDTO[] populate() throws ApiException {
-        OrderLineDTO ol1 = new OrderLineDTO(null, 2, 19.99, null, null);
-        OrderLineDTO ol2 = new OrderLineDTO(null, 1, 14.99, null, null);
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setId(1);
+        orderDTO.setOrderPrice(100.0);
+        orderDTO.setOrderDate("2021-01-01");
+        orderDTO.setUser(new PizzaUserDTO("user", Set.of("USER"))); // Corrected to use Set.of
+
+        PizzaDTO pizzaDTO1 = new PizzaDTO(1, "Geo", "Delicious pizza", "Cheese, Tomato", 9.99, Pizza.PizzaType.REGULAR,null);
+        PizzaDTO pizzaDTO2 = new PizzaDTO(2, "Margherita", "Classic pizza", "Cheese, Tomato, Basil", 8.99, Pizza.PizzaType.FAMILY, null);
+
+        OrderLineDTO ol1 = new OrderLineDTO();
+        ol1.setQuantity(2);
+        ol1.setPrice(19.99);
+        ol1.setPizza(pizzaDTO1);
+        ol1.setOrder(orderDTO);
+
+        OrderLineDTO ol2 = new OrderLineDTO();
+        ol2.setQuantity(1);
+        ol2.setPrice(14.99);
+        ol2.setPizza(pizzaDTO2);
+        ol2.setOrder(orderDTO);
 
         create(ol1);
         create(ol2);
@@ -132,5 +152,18 @@ public class OrderLineDAO implements IDAO<OrderLineDTO, Integer> {
 
     private Order convertToOrder(OrderDTO orderDTO) {
         return new Order(orderDTO);
+    }
+
+    public List<OrderLineDTO> readAllFromUser(UserDTO user) throws ApiException {
+        EntityManager em = emf.createEntityManager();
+        try {
+            TypedQuery<OrderLineDTO> query = em.createQuery("SELECT new dat.dtos.OrderLineDTO(ol) FROM OrderLine ol WHERE ol.user.id = :userId", OrderLineDTO.class);
+            query.setParameter("userId", user.getUsername());
+            return query.getResultList();
+        } catch (Exception e) {
+            throw new ApiException(400, "Something went wrong during readAllFromUser: " + e.getMessage());
+        } finally {
+            em.close();
+        }
     }
 }

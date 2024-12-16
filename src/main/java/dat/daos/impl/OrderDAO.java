@@ -5,6 +5,7 @@ import dat.dtos.OrderDTO;
 import dat.dtos.PizzaUserDTO;
 import dat.entities.Order;
 import dat.exceptions.ApiException;
+import dat.security.daos.SecurityPopulatorDAO;
 import dat.security.entities.User;
 import dk.bugelhartmann.UserDTO;
 import jakarta.persistence.EntityManager;
@@ -33,6 +34,9 @@ public class OrderDAO {
             if (order == null) {
                 throw new ApiException(404, "Order not found");
             }
+
+            // Ensure user is fetched
+            order.getUser();
             return new OrderDTO(order);
         } catch (Exception e) {
             throw new ApiException(400, "Something went wrong during read");
@@ -54,6 +58,11 @@ public class OrderDAO {
 
             // Create a new order entity from the OrderDTO
             Order order = new Order(orderDTO);
+
+            // Set the user if provided
+            if (orderDTO.getUser() != null) {
+                order.setUser(convertToUser(orderDTO.getUser()));
+            }
 
             // Persist the order entity
             em.persist(order);
@@ -114,26 +123,35 @@ public class OrderDAO {
     }
 
     public void populate() throws ApiException {
-        try (EntityManager em = emf.createEntityManager()) {
+        EntityManager em = emf.createEntityManager();
+        try {
             em.getTransaction().begin();
 
-            // Create sample data
-            List<Order> sampleOrders = new ArrayList<>();
-            sampleOrders.add(new Order("2021-01-01", 100.0, null));
-            sampleOrders.add(new Order("2021-01-02", 200.0, null));
-            sampleOrders.add(new Order("2021-01-03", 300.0, null));
-            // Add sample orders to the list
+            // Create sample users
+            UserDTO[] users = SecurityPopulatorDAO.populateUsers(emf);
+            UserDTO userDTO = users[0];
+            UserDTO adminDTO = users[1];
 
-            // Persist sample data
+            // Create sample orders
+            List<Order> sampleOrders = new ArrayList<>();
+            sampleOrders.add(new Order("2021-01-01", 100.0, new User(userDTO)));
+            sampleOrders.add(new Order("2021-01-02", 200.0, new User(userDTO)));
+            sampleOrders.add(new Order("2021-01-03", 300.0, new User(adminDTO)));
+
+            // Persist sample orders
             for (Order order : sampleOrders) {
                 em.persist(order);
             }
 
             em.getTransaction().commit();
         } catch (Exception e) {
-            throw new ApiException(400, "Something went wrong during populate");
+            em.getTransaction().rollback();
+            throw new ApiException(400, "Something went wrong during populate: " + e.getMessage());
+        } finally {
+            em.close();
         }
     }
+
 
     public List<OrderDTO> readAllFromUser(String username) throws ApiException {
         try (EntityManager em = emf.createEntityManager()) {

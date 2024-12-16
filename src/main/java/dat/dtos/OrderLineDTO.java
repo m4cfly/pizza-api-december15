@@ -15,6 +15,7 @@ public class OrderLineDTO {
     private double price;
     private PizzaDTO pizza;
     private OrderDTO order;
+    private PizzaUserDTO user;  // UserDTO for the user who placed the order
 
     public OrderLineDTO(Integer id, int quantity, double price, PizzaDTO pizza, OrderDTO order) {
         this.id = id;
@@ -40,5 +41,9 @@ public class OrderLineDTO {
 
     public void setOrder(OrderDTO order) {
         this.order = order;
+    }
+    // Add a setUser method if not present
+    public void setUser(PizzaUserDTO user) {
+        this.user = user;
     }
 }
