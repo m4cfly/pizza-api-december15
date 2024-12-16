@@ -2,32 +2,31 @@ package dat.controllers.impl;
 
 import dat.config.HibernateConfig;
 import dat.controllers.IController;
-import dat.daos.impl.OrderLineDAO;
-import dat.dtos.OrderLineDTO;
+import dat.daos.impl.PizzaOrderDAO;
+import dat.dtos.PizzaOrderDTO;
 import dat.exceptions.ApiException;
 import dk.bugelhartmann.UserDTO;
-import dat.dtos.PizzaUserDTO;
 import io.javalin.http.Context;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
 
 import java.util.List;
 
-public class OrderLineController implements IController<OrderLineDTO, Integer> {
-    private final OrderLineDAO dao;
+public class PizzaOrderController implements IController<PizzaOrderDTO, Integer> {
+    private final PizzaOrderDAO dao;
 
-    public OrderLineController() {
+    public PizzaOrderController() {
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
-        this.dao = OrderLineDAO.getInstance(emf);
+        this.dao = PizzaOrderDAO.getInstance(emf);
     }
 
     @Override
     public void read(Context ctx) throws ApiException {
         try {
             int id = Integer.parseInt(ctx.pathParam("id"));
-            OrderLineDTO orderLineDTO = dao.read(id);
+            PizzaOrderDTO pizzaOrderDTO = dao.read(id);
             ctx.res().setStatus(200);
-            ctx.json(orderLineDTO, OrderLineDTO.class);
+            ctx.json(pizzaOrderDTO, PizzaOrderDTO.class);
         } catch (NumberFormatException e) {
             throw new ApiException(400, "Missing required parameter: id");
         }
@@ -35,37 +34,40 @@ public class OrderLineController implements IController<OrderLineDTO, Integer> {
 
     @Override
     public void readAll(Context ctx) throws ApiException {
-        List<OrderLineDTO> orderLineDTOS = dao.readAll();
+        List<PizzaOrderDTO> pizzaOrderDTOS = dao.readAll();
         ctx.res().setStatus(200);
-        ctx.json(orderLineDTOS, OrderLineDTO.class);
+        ctx.json(pizzaOrderDTOS, PizzaOrderDTO.class);
     }
 
     public void readAllFromUser(Context ctx) throws ApiException {
-        UserDTO user = ctx.attribute("user");
-        List<OrderLineDTO> orderLineDTOS = dao.readAllFromUser(user);
-        ctx.res().setStatus(200);
-        ctx.json(orderLineDTOS, OrderLineDTO.class);
+        try {
+            UserDTO user = ctx.attribute("user");
+            List<PizzaOrderDTO> pizzaOrderDTOS = dao.readAllFromUser(user);
+            ctx.res().setStatus(200);
+            ctx.json(pizzaOrderDTOS, PizzaOrderDTO.class);
+        } catch (Exception e) {
+            throw new ApiException(400, "Something went wrong during readAllFromUser");
+        }
     }
 
     @Override
     public void create(Context ctx) throws ApiException {
-        OrderLineDTO orderLineDTO = ctx.bodyAsClass(OrderLineDTO.class);
+        PizzaOrderDTO pizzaOrderDTO = ctx.bodyAsClass(PizzaOrderDTO.class);
         UserDTO user = ctx.attribute("user");
-        PizzaUserDTO pizzaUserDTO = new PizzaUserDTO(user.getUsername(), user.getRoles());
-        orderLineDTO.setUser(pizzaUserDTO);
-        orderLineDTO = dao.create(orderLineDTO);
+        pizzaOrderDTO.setUser(user);
+        pizzaOrderDTO = dao.create(pizzaOrderDTO);
         ctx.res().setStatus(201);
-        ctx.json(orderLineDTO, OrderLineDTO.class);
+        ctx.json(pizzaOrderDTO, PizzaOrderDTO.class);
     }
 
     @Override
     public void update(Context ctx) throws ApiException {
         try {
             int id = Integer.parseInt(ctx.pathParam("id"));
-            OrderLineDTO orderLineDTOfromJson = ctx.bodyAsClass(OrderLineDTO.class);
-            OrderLineDTO orderLineDTO = dao.update(id, orderLineDTOfromJson);
+            PizzaOrderDTO pizzaOrderDTOfromJson = ctx.bodyAsClass(PizzaOrderDTO.class);
+            PizzaOrderDTO pizzaOrderDTO = dao.update(id, pizzaOrderDTOfromJson);
             ctx.res().setStatus(200);
-            ctx.json(orderLineDTO, OrderLineDTO.class);
+            ctx.json(pizzaOrderDTO, PizzaOrderDTO.class);
         } catch (NumberFormatException e) {
             throw new ApiException(400, "Missing required parameter: id");
         }
@@ -85,9 +87,9 @@ public class OrderLineController implements IController<OrderLineDTO, Integer> {
 
     public void populate(Context ctx) throws ApiException {
         try {
-            OrderLineDTO[] orderLineDTOS = dao.populate();
+            PizzaOrderDTO[] pizzaOrderDTOS = dao.populate();
             ctx.res().setStatus(200);
-            ctx.json("{ \"message\": \"Database has been populated with order lines\" }");
+            ctx.json("{ \"message\": \"Database has been populated with pizza orders\" }");
         } catch (PersistenceException e) {
             throw new ApiException(400, "Populator went wrong, dude");
         }

@@ -1,6 +1,7 @@
 package dat.security.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import dat.entities.PizzaOrder;
 import dat.entities.Todo;
 import dk.bugelhartmann.UserDTO;
 import jakarta.persistence.*;
@@ -40,6 +41,10 @@ public class User implements Serializable, ISecurityUser {
     @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_name", referencedColumnName = "username")}, inverseJoinColumns = {@JoinColumn(name = "role_name", referencedColumnName = "name")})
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<PizzaOrder> pizzaOrders = new HashSet<>();
+
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Todo> todos = new HashSet<>();
@@ -101,6 +106,22 @@ public class User implements Serializable, ISecurityUser {
         }
         todos.remove(todo);
         todo.setUser(null);
+    }
+
+    public void addPizzaOrderToUser(PizzaOrder pizzaOrder) {
+        if (pizzaOrder == null) {
+            return;
+        }
+        pizzaOrders.add(pizzaOrder);
+        pizzaOrder.setUser(this);
+    }
+
+    public void removePizzaOrderFromUser(PizzaOrder pizzaOrder) {
+        if (pizzaOrder == null) {
+            return;
+        }
+        pizzaOrders.remove(pizzaOrder);
+        pizzaOrder.setUser(null);
     }
 
     public User (UserDTO userDTO) {

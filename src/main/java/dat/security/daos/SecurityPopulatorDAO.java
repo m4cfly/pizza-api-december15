@@ -1,7 +1,6 @@
 package dat.security.daos;
 
 import dat.config.HibernateConfig;
-import dat.daos.impl.PizzaDAO;
 import dat.security.entities.Role;
 import dat.security.entities.User;
 import dk.bugelhartmann.UserDTO;
@@ -36,7 +35,4 @@ public class SecurityPopulatorDAO {
         return new UserDTO[]{userDTO, adminDTO};
     }
 
-    public static PizzaDAO getInstance(EntityManagerFactory emf) {
-        return PizzaDAO.getInstance(emf);
-    }
 }
