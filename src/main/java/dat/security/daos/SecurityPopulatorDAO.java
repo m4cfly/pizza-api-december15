@@ -35,7 +35,4 @@ public class SecurityPopulatorDAO {
         return new UserDTO[]{userDTO, adminDTO};
     }
 
-    public static PizzaDAO getInstance(EntityManagerFactory emf) {
-        return PizzaDAO.getInstance(emf);
-    }
 }

@@ -2,7 +2,7 @@
 GET {{url}}/auth/test/
 
 ### Populate the database with some data
-POST {{url}}/orders/populate/
+POST {{url}}/pizza-orders/populate/
 
 ### Create a new user - this one will only get a USER role by default
 POST {{url}}/auth/register/
@@ -41,72 +41,56 @@ Accept: application/json
 Authorization: Bearer {{jwt_token}}
 
 {
-    "role": "admin"
+    "role": "ADMIN"
 }
 Accept: application/json
 Authorization: Bearer {{jwt_token}}
 
-### Populate the database with orders
-POST {{url}}/orders/populate
-Content-Type: application/json
+###
+GET {{url}}/pizza-orders
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
 
-### Create a new order
-POST {{url}}/orders
+###
+GET {{url}}/pizza-orders/mine
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+###
+GET {{url}}/pizza-orders/1
+Accept: application/json
+Authorization: Bearer {{jwt_token}}
+
+###
+POST {{url}}/pizza-orders
+Content-Type: application/json
+Authorization: Bearer {{jwt_token}}
+
+
+  {
+    "id": 40,
+    "pizzaName": "Margherita",
+    "quantity": 2,
+    "price": 15.99,
+    "user": {
+      "username": "usertest",
+      "password": null,
+      "roles": ["USER"]
+    }
+  }
+
+
+###
+PUT {{url}}/pizza-orders/1
 Content-Type: application/json
 Authorization: Bearer {{jwt_token}}
 
 {
-  "orderPrice": 25.99,
-  "orderDate": "2023-10-01",
-  "user": {
-    "username": "user"
-  },
-  "orderLines": [
-    {
-      "pizza": {
-        "id": 1
-      },
-      "quantity": 2
-    }
-  ]
+  "pizzaName": "Pepperoni",
+  "quantity": 3,
+  "price": 18.99
 }
 
-### Get all orders
-GET {{url}}/orders
-Accept: application/json
-Authorization: Bearer {{jwt_token}}
-
-### Get a specific order by ID
-GET {{url}}/orders/1
-Accept: application/json
-Authorization: Bearer {{jwt_token}}
-
-### Get all orders for the current user
-GET {{url}}/orders/user
-Accept: application/json
-Authorization: Bearer {{jwt_token}}
-
-### Update an order by ID
-PUT {{url}}/orders/{id}
-Content-Type: application/json
-Authorization: Bearer {{jwt_token}}
-
-{
-  "orderPrice": 30.99,
-  "orderDate": "2023-10-02",
-  "user": {
-    "username": "user"
-  },
-  "orderLines": [
-    {
-      "pizza": {
-        "id": 1
-      },
-      "quantity": 3
-    }
-  ]
-}
-
-### Delete an order by ID
-DELETE {{url}}/orders/{id}
+###
+DELETE {{url}}/pizza-orders/1
 Authorization: Bearer {{jwt_token}}

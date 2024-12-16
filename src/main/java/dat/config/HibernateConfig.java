@@ -45,10 +45,7 @@ public class HibernateConfig {
         configuration.addAnnotatedClass(User.class);
         configuration.addAnnotatedClass(Role.class);
         configuration.addAnnotatedClass(Todo.class);
-        configuration.addAnnotatedClass(Pizza.class);
-        configuration.addAnnotatedClass(Order.class);
-        configuration.addAnnotatedClass(OrderLine.class);
-        configuration.addAnnotatedClass(OrderUser.class);
+        configuration.addAnnotatedClass(PizzaOrder.class);
     }
 
     private static EntityManagerFactory createEMF(boolean forTest) {
