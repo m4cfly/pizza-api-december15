@@ -1,7 +1,9 @@
 package dat.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dat.entities.Order;
 import dat.entities.OrderLine;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +11,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderLineDTO {
     private Integer id;
     private int quantity;

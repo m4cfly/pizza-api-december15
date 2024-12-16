@@ -27,67 +27,53 @@ public class PizzaDAO implements IDAO<PizzaDTO, Integer> {
 
     @Override
     public PizzaDTO read(Integer pizzaId) throws ApiException {
-        EntityManager em = emf.createEntityManager();
-        try {
+        try (EntityManager em = emf.createEntityManager()) {
             Pizza pizza = em.find(Pizza.class, pizzaId);
             if (pizza == null) {
                 throw new ApiException(404, "Pizza not found");
             }
             return new PizzaDTO(pizza);
         } catch (Exception e) {
-            throw new ApiException(400, "Something went wrong during read: " + e.getMessage());
-        } finally {
-            em.close();
+            throw new ApiException(400, "Something went wrong during read");
         }
     }
 
     @Override
     public List<PizzaDTO> readAll() throws ApiException {
-        EntityManager em = emf.createEntityManager();
-        try {
+        try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<PizzaDTO> query = em.createQuery("SELECT new dat.dtos.PizzaDTO(p) FROM Pizza p", PizzaDTO.class);
             return query.getResultList();
         } catch (Exception e) {
-            throw new ApiException(400, "Something went wrong during readAll: " + e.getMessage());
-        } finally {
-            em.close();
+            throw new ApiException(400, "Something went wrong during readAll");
         }
     }
 
     public List<PizzaDTO> readAllFromUser(UserDTO user) throws ApiException {
-        EntityManager em = emf.createEntityManager();
-        try {
+        try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<PizzaDTO> query = em.createQuery("SELECT new dat.dtos.PizzaDTO(p) FROM Pizza p WHERE p.user.id = :userId", PizzaDTO.class);
             query.setParameter("userId", user.getUsername());
             return query.getResultList();
         } catch (Exception e) {
-            throw new ApiException(400, "Something went wrong during readAllFromUser: " + e.getMessage());
-        } finally {
-            em.close();
+            throw new ApiException(400, "Something went wrong during readAllFromUser");
         }
     }
 
     @Override
     public PizzaDTO create(PizzaDTO pizzaDTO) throws ApiException {
-        EntityManager em = emf.createEntityManager();
-        try {
+        try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             Pizza pizza = new Pizza(pizzaDTO);
             em.persist(pizza);
             em.getTransaction().commit();
             return new PizzaDTO(pizza);
         } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw new ApiException(400, "Something went wrong during create: " + e.getMessage());
-        } finally {
-            em.close();
+            throw new ApiException(400, "Something went wrong during create");
         }
     }
 
     @Override
     public PizzaDTO update(Integer pizzaId, PizzaDTO pizzaDTO) throws ApiException {
-        EntityManager em = emf.createEntityManager();
-        try {
+        try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             Pizza pizza = em.find(Pizza.class, pizzaId);
             if (pizza == null) {
@@ -102,17 +88,13 @@ public class PizzaDAO implements IDAO<PizzaDTO, Integer> {
             em.getTransaction().commit();
             return new PizzaDTO(pizza);
         } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw new ApiException(400, "Something went wrong during update: " + e.getMessage());
-        } finally {
-            em.close();
+            throw new ApiException(400, "Something went wrong during update");
         }
     }
 
     @Override
     public void delete(Integer pizzaId, UserDTO userDTO) throws ApiException {
-        EntityManager em = emf.createEntityManager();
-        try {
+        try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             Pizza pizza = em.find(Pizza.class, pizzaId);
             if (pizza == null) {
@@ -121,32 +103,20 @@ public class PizzaDAO implements IDAO<PizzaDTO, Integer> {
             em.remove(pizza);
             em.getTransaction().commit();
         } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw new ApiException(400, "Something went wrong during delete: " + e.getMessage());
-        } finally {
-            em.close();
+            throw new ApiException(400, "Something went wrong during delete");
         }
     }
 
     public PizzaDTO[] populate() throws ApiException {
-        EntityManager em = emf.createEntityManager();
-        try {
-            UserDTO[] users = SecurityPopulatorDAO.populateUsers(emf);
-            UserDTO userDTO = users[0];
-            UserDTO adminDTO = users[1];
-            PizzaDTO pizza1 = new PizzaDTO(null, "Margherita", "Classic margherita pizza", "Tomato, mozzarella, basil", 9.99, Pizza.PizzaType.REGULAR, userDTO);
-            PizzaDTO pizza2 = new PizzaDTO(null, "Pepperoni", "Classic pepperoni pizza", "Tomato, mozzarella, pepperoni", 11.99, Pizza.PizzaType.REGULAR, userDTO);
-            PizzaDTO pizza3 = new PizzaDTO(null, "Hawaiian", "Classic Hawaiian pizza", "Tomato, mozzarella, ham, pineapple", 12.99, Pizza.PizzaType.REGULAR, adminDTO);
-
-            create(pizza1);
-            create(pizza2);
-            create(pizza3);
-            return new PizzaDTO[]{pizza1, pizza2, pizza3};
-        } catch (Exception e) {
-            throw new ApiException(400, "Something went wrong during populate: " + e.getMessage());
-        } finally {
-            em.close();
-        }
+        UserDTO[] users = SecurityPopulatorDAO.populateUsers(emf);
+        UserDTO userDTO = users[0];
+        UserDTO adminDTO = users[1];
+        PizzaDTO pizza1 = new PizzaDTO(null, "Margherita", "Classic margherita pizza", "Tomato, mozzarella, basil", 9.99, Pizza.PizzaType.REGULAR, userDTO);
+        PizzaDTO pizza2 = new PizzaDTO(null, "Pepperoni", "Classic pepperoni pizza", "Tomato, mozzarella, pepperoni", 11.99, Pizza.PizzaType.REGULAR, userDTO);
+        PizzaDTO pizza3 = new PizzaDTO(null, "Hawaiian", "Classic Hawaiian pizza", "Tomato, mozzarella, ham, pineapple", 12.99, Pizza.PizzaType.REGULAR, adminDTO);
+        create(pizza1);
+        create(pizza2);
+        create(pizza3);
+        return new PizzaDTO[]{pizza1, pizza2, pizza3};
     }
-
 }
