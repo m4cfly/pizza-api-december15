@@ -44,9 +44,6 @@ public class User implements Serializable, ISecurityUser {
     private Set<PizzaOrder> pizzaOrders = new HashSet<>();
 
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<Todo> todos = new HashSet<>();
-
     public Set<String> getRolesAsStrings() {
         if (roles.isEmpty()) {
             return null;
@@ -90,21 +87,6 @@ public class User implements Serializable, ISecurityUser {
                 });
     }
 
-    public void addTodoToUser(Todo todo) {
-        if (todo == null) {
-            return;
-        }
-        todos.add(todo);
-        todo.setUser(this);
-    }
-
-    public void removeTodoFromUser(Todo todo) {
-        if (todo == null) {
-            return;
-        }
-        todos.remove(todo);
-        todo.setUser(null);
-    }
 
     public void addPizzaOrderToUser(PizzaOrder pizzaOrder) {
         if (pizzaOrder == null) {
