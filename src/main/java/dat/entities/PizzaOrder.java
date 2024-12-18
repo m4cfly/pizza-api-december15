@@ -20,6 +20,8 @@ public class PizzaOrder {
     private String pizzaName;
     private int quantity;
     private double price;
+    private boolean done;
+
 
     @ToString.Exclude   // Avoid recursion
     @ManyToOne(fetch = FetchType.EAGER)
@@ -31,6 +33,7 @@ public class PizzaOrder {
         this.pizzaName = pizzaOrderDTO.getPizzaName();
         this.quantity = pizzaOrderDTO.getQuantity();
         this.price = pizzaOrderDTO.getPrice();
+        this.done = pizzaOrderDTO.isDone();
         this.user = new User(pizzaOrderDTO.getUser());
     }
 

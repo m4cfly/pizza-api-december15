@@ -19,6 +19,7 @@ public class PizzaOrderDTO {
     private String pizzaName;
     private int quantity;
     private double price;
+    private boolean done;
     private UserDTO user = null;
 
     public PizzaOrderDTO(PizzaOrder pizzaOrder) {
@@ -26,6 +27,7 @@ public class PizzaOrderDTO {
         this.pizzaName = pizzaOrder.getPizzaName();
         this.quantity = pizzaOrder.getQuantity();
         this.price = pizzaOrder.getPrice();
+        this.done = pizzaOrder.isDone();
         if (pizzaOrder.getUser() != null) {
             User userEntity = pizzaOrder.getUser();
             this.user = new UserDTO(userEntity.getUsername(), userEntity.getRolesAsStrings());
