@@ -1,8 +1,6 @@
 package dat.security.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dat.entities.PizzaOrder;
-import dat.entities.Todo;
 import dk.bugelhartmann.UserDTO;
 import jakarta.persistence.*;
 import lombok.*;
